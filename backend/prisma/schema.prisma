@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  SUBADMIN
+  USER
+}
+
+model User {
+  id         Int        @id @default(autoincrement())
+  name       String
+  email      String     @unique
+  password   String
+  role       Role       @default(USER)
+  posts      Post[]
+  categories Category[]
+  createdAt  DateTime   @default(now()) @map("created_at")
+  updatedAt  DateTime   @updatedAt @map("updated_at")
+  deletedAt  DateTime?  @map("deleted_at")
+
+  @@map("users")
+}
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  userId    Int?
+  imageId   Int?
+  title     String    @db.VarChar(255)
+  slug      String    @unique @db.VarChar(255)
+  content   String?   @db.Text
+  user      User?     @relation(fields: [userId], references: [id])
+  posts     Post[]    @relation("CategoryPost")
+  image     Gallery?  @relation(fields: [imageId], references: [id])
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@map("categories")
+}
+
+model Post {
+  id         Int        @id @default(autoincrement())
+  userId     Int?
+  title      String     @db.VarChar(255)
+  slug       String     @unique @db.VarChar(255)
+  content    String?    @db.Text
+  imageId    Int?
+  image      Gallery?   @relation(fields: [imageId], references: [id])
+  user       User?      @relation(fields: [userId], references: [id])
+  categories Category[] @relation("CategoryPost")
+  createdAt  DateTime   @default(now()) @map("created_at")
+  updatedAt  DateTime   @updatedAt @map("updated_at")
+  deletedAt  DateTime?  @map("deleted_at")
+
+  @@map("posts")
+}
+
+model Gallery {
+  id        Int        @id @default(autoincrement())
+  name      String?
+  alt       String?
+  path      String     @unique
+  Category  Category[]
+  Post      Post[]
+  deletedAt DateTime?  @map("deleted_at")
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+}

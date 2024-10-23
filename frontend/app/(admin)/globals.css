@@ -1,0 +1,17 @@
+@config "./tailwind.admin.config.ts";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "@mantine/core/styles.css";
+@import "@mantine/nprogress/styles.css";
+@import "@mantine/tiptap/styles.css";
+@import "@mantine/notifications/styles.css";
+@import "mantine-datatable/styles.layer.css";
+
+.mantine-datatable-pagination-pages-control {
+  transform: translateY(0) !important;
+}
+
+.tiptap {
+  height: 300px;
+}
